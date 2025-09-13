@@ -1,0 +1,71 @@
+READ ME for Movement Code instructions
+
+Here's how I implemented the movement code with animations in unity
+
+Step 1: 
+Make sure pengu object has rigidbody 2d, boxcolider2d, and the movement code script attached, make sure you drag the box collider, the rigidbody, and the ground object. Leave animator field blank for now
+
+Go to window,
+	Animation > Animation
+Attach this animation window anywhere
+
+Step 2:
+In Assets folder, create a subfolder called Animation, then a subsubfolder called Player (or pengu, whatever)
+
+Step 3:
+Select Pengu Object, go look at animation window then create each idle left/right, walk left/right as separate animations which go to the animation folder
+	> you can make animations by dragging each individual tile in each sprite sheet into the animation window
+	> don't forget for each spritesheet to have good quality, change Filter Mode to Point(no filter), Compression to None
+		> note, this is the spritesheet pngs mismo, not pengu as an object in the game
+
+Step 4, Animator State Machine:
+Go to Window > Animation > Animator and put the animator window somewhere
+
+In animator window, right click, delete all nodes except for entry, any state, and exit nodes
+
+Then, Create State > From New Blend tree
+
+make a new blend tree for Idle and a new one for Walk
+
+Right Click Idle blend tree node and make it default state.
+
+Step 5: 
+In Animator window: 
+
+Create Parameters
+	click plus button under parameters
+	Float named Horizontal
+	Float named Speed
+	Float named LastHorizontal (default this to 1, so the player defaults to idling right at first) 
+	*note this is how they were spelled in the code, so please mind the Case Sensitivity for the names
+
+Step 6, State Machine Transitions:
+Right Click Idle node > create transition > click on walk node
+Right Click Walk node > create transition > click on idle node
+
+for both transitions, uncheck ExitTime and make transition duration = 0
+
+Click on transition from idle to walk (the arrow), add a condition with speed to be greater than 0.01
+same thing with walk to idle but speed is less than 0.01
+
+Double Click Idle Node to open blend tree view
+
+make sure blend type is 1D
+change parameter to LastHorizontal
+
+add two motions, one with idle left and the other with idle right
+uncheck automate thresholds
+
+for left, make threshold -1
+for right, 1
+
+
+Press base layer, then double click Walk node
+click blend tree then set parameter to Horizontal
+same thing with the threshold stuff, just make sure animation is walk left/right 
+
+Step 7:
+go to animation folder, in player animation folder, theres the 4 animations, and a separate Player animation control thing
+drag that into the animator field in the Player control script in the pengu object
+
+then u shud be good!! just text if u have issues
