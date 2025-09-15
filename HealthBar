@@ -1,0 +1,25 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HealthBar : MonoBehaviour
+{
+    // this code is for the player UI (i.e., the hearts on the screen)
+
+    [SerializeField] private Player_Health playerHealth;
+    [SerializeField] private Image totalHealthBar;
+    [SerializeField] private Image currentHealthBar;
+
+    private void Start()
+    {
+        totalHealthBar.fillAmount = playerHealth.currentHealth / 6;
+
+        // note this is 6 just because this is the total number of hearts in the heart spritesheet
+        // we can set the total/max health any number between 1-6
+        // it is just set to 3 arbitrarily 
+    }
+
+    private void Update()
+    {
+        currentHealthBar.fillAmount = playerHealth.currentHealth / 6;
+    }
+}
