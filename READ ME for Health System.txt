@@ -1,0 +1,138 @@
+READ ME for Health System
+To whom it may concern, if you are reading this, Xander is a stinky poo poo
+
+-------------- CHAPTER 1 (LMFAO CHAPTER???), USER INTERFACE --------------
+
+--- Step 1, Making the Canvas: ---
+
+Right Click in Hierarchy area, go to UI > Canvas
+make a canvas, rename to UICanvas
+
+To focus on the canvas contents, double click the UICanvas object in the hierarchy 
+	(double click pengu if u wanna go back to scene view)
+
+then as a child of Canvas, make an empty object
+
+this object will be our "holder" of the health bar, thus rename it as HealthBar
+-> attach HealthBar cs script here, this will be its only component
+
+--- Step 2, Total Health and Current Health bar images: ---
+
+HealthBar object has two babies (father unknown)
+
+make two image children objects under HealthBar
+found in UI > image
+
+for now, place in the source image (i.e., component of the image object) as the Hearts png thingie (SOFIE WILL UPLOAD THIS SPRITESHEET FOR THE HEARTS WHEN SHE REMEMBERS TY)
+	-> make sure preserve aspect is checked and click set native size before resizing the heart bar
+
+do this for both children images, name one of them HealthBarTotal and the other one HealthBarCurrent
+-> note, the location/position of Total and Current *should* be exactly the same (the plan is to slowly reduce current health when pengu gets damaged)
+	-> BASTA DAPAT SAME LANG COORDINATES NILA, DI PO DAPAT LINEARLY INDEPENDENT SILA
+	-> I made my hearts in the upper left, you have the freedom of putting them wherever in the canvas
+ 
+for both children, change image type (in image component) to filled, with fill method set to Horizontal, fill origin to left
+
+There are 6 hearts total, for testing purposes (i.e. to let pengu die more quickly) I set it to 3 hearts,
+so 3/6 = 0.5, so make fill amount 0.5
+
+(note, this all should work regardless of the fill amount assuming that u adjust starting health accordingly)
+(i.e., if u want 2 hearts lang, 2/6, so set fill amount to 0.33)
+(startingHealth will be brought up mamaya when we are done setting up the UI) 
+
+You should have the hierarchy
+UICanvas
+->Event System
+->HealthBar
+	->HealthBarTotal
+	->HealthBarCurrent
+
+Yay that's it for the UI
+
+
+-------------- CHAPTER 2, Setting up Pengu: --------------
+
+--- Step 1, Create Starting/Respawn Point: ---
+
+Create an empty game object called StartingPoint, make sure it has the same coordinates as where u spawn pengu in ur scene view (rn, mine is set to -5.5, 0.5)
+-> PRO TIP, since its an empty obj, theres no tangible thing to see where it is
+	-> look at inspector while selecting the startingpoint obj, see where the name box is and the checkbox
+	-> theres a cube looking thingie there, click the drop down and select any one of those
+	-> that changes it to a viewable icon in the scene view which is actually invisible in game view 
+
+This Game obj will just be empty, we just need to have it exist coz we wanna refer to its position later on
+
+--- Step 2, Updating Pengu object: ---
+
+Attach Player_Health.cs in Pengu's components
+
+Drag the StartingPoint object in Hierarchy into the Spawn Point Field
+
+Das it for Pengu!
+
+-------------- CHAPTER 3, Prefabbing the Spikes!: --------------
+
+if when you are reading this, the spike png has not yet been uploaded, simply create a triangle game object and size as u wish
+
+--- Step 1, Parent Prefab: ---
+
+Create an empty folder in project called Prefabs (we will come back to this later)
+
+In the game, create an empty game object called Spikes, this obj will have no components
+
+--- Step 2, Children Spikes: ---
+
+Place one individual spike sprite into the Spikes game object(i simply named it Spike)
+
+Go to inspector while selecting this, see the name box, in the tag drop down under the name box create a new tag called Spike
+	-> no need to edit the layer
+	-> note, make sure Spikes, the parent game object, is not tagged under Spike
+
+Duplicate in as many individual spike objects as u want into the Spikes object
+-> I didnt name these individual spikes, i just have Spike(1), Spike(2), etc
+-> you have freedom to adjust the number, but for feasibility i just made it 3 spikes
+-> for simplicity sake, if you do have multiple individual spikes, please make them right beside each other without any gaps because we will only account for one total box collider amongst them
+
+--- Step 3, Collider: ---
+
+for the Spikes game object, create a box collider 2d and adjust it to encompass all of the individual spikes(including the sides of the spikes) 
+-> note this collider is a child of the Spikes game object, hence it is a sibling of the individual spikes, not a child to any of the individual spikes
+
+--- Step 4, Spike Respawn: ---
+
+When the player gets hit but doesnt die, we dont want them to just stay on the spikes coz itll loop damage until they do die, hence we have to set a point before the spikes where the player will teleport to so it doesnt loop damage
+
+as a child of the Spikes object, create an empty game object called SpikePushback (you can do the same trick i told u about in the StartingPoint thing to be able to view where it is)
+	
+	-> SpikePushback has no components, we just want to have the position of it
+	
+	-> adjust spikePushback's location to be before the spikes, and make sure it is far enough that pengu has breathing room when he gets pushed back there
+	
+	-> While StartingPoint's name can be literally anything since it is directly placed into the Pengu components, SpikePushback is directly referenced in the code so please make sure u either copy SpikePushback, or edit the code to follow the naming convention you want 
+
+Your spikes hierarchy should look like this:
+Spikes (empty game obj)
+-> Spike (triangle game obj)
+-> optionally Spike(1), Spike(2) if you made more than one
+-> SpikePushback (empty obj)
+-> Collider (empty obj with 2D box collider component)
+
+--- Step 5, Making it a Prefab: ---
+
+Once you are done setting up your Spikes object, simply drag it into your prefabs folder
+
+now, if you wanna make more Spikes objects, simply drag it from the prefabs folder and into your scene
+-> you can edit each prefab spawned into the game
+	-> you can adjust the number of spikes (assuming you adjust the collider too)
+	-> you can adjust the SpikePushback location etc
+	-> editing the individual prefab will not affect how subsequent prefabs look
+
+-> "OH SHIT I MADE A MISTAKE AND FORGOT TO DO STEP X PROPERLY WITH THE PREFABS"
+	-> simply edit one of the Spikes prefabs in the scene to your changed settings then drag it into the prefab object in the folder
+		-> note, make sure it is dragged onto the object in the folder and not anywhere else or it might create an entirely new prefab instead of editing the old one
+
+	-> from my understanding, the prefabs within the scene will not update to the updated prefab u made so youll have to create them again with the updated prefab (SO MAKE SURE YOU READ THESE SPECS BEFORE LOCKING IN YOUR PREFAB CHAR 1/2) 
+
+
+YAY THATS IT
+P.S. xander you still stink peeyew
