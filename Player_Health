@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Player_Health : MonoBehaviour
+{
+    [SerializeField] private float startingHealth;
+    [SerializeField] private GameObject spawnPoint;
+
+    // startingHealth: inputed health in Unity Editor
+    // spawnPoint: place where player respawns if they run out of health, restarting the level
+
+    public float currentHealth { get; private set; }
+
+    // get means any file can get the data 
+    // private set means only this local Player_Health can set the health
+
+    private void Awake()
+    {
+        currentHealth = startingHealth;
+
+        // instantiates player health with starting health stated in serialized field in unity editor
+    }
+
+    public void TakeDamage( float _damage )
+    {
+        currentHealth = Mathf.Clamp( currentHealth - _damage, 0, startingHealth );
+
+        // _damage is how much damage the player will take to their currentHealth
+        // Mathf.Clamp basically restricts the health to a minimum (0) and a maximum (startHealth)
+        // in a sense, the player's health now cannot go below 0 or above his maximum health
+
+        if( currentHealth == 0 )
+        {
+
+            transform.position = spawnPoint.transform.position;
+            currentHealth = startingHealth;
+            // if currentHealth hits 0, the player teleports to the start(spawnPoint)
+            // since the level restarts, the player's health goes back to the original starting health (3)
+        }
+    }
+
+    void OnCollisionEnter2D( Collision2D collision )
+    {
+        if( collision.gameObject.tag == "Spike" ) //within the Spikes prefab, 
+        // each individual Spike has a object tag of Spike
+        // only if the player collides with a game object with this Spike tag will this trigger
+        {
+            transform.position = collision.gameObject.transform.parent.Find( "SpikePushback" ).position;
+            TakeDamage( 1 );
+
+            // the individual spikes are children of an empty game object Spikes
+            // this Spikes has an empty child object which is where the player teleports once they hit it
+            // it also calls TakeDamage() to decrement the players health by 1
+        }
+    }
+}
